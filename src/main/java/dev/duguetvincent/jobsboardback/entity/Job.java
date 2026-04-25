@@ -50,10 +50,8 @@ public class Job {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    private String url;
-
     @Column(columnDefinition = "TEXT")
-    private String description;
+    private String url;
 
     @ElementCollection
     @CollectionTable(name = "job_tags", joinColumns = @JoinColumn(name = "job_id"))

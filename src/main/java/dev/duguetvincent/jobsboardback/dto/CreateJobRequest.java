@@ -23,7 +23,6 @@ public class CreateJobRequest {
     private JobStatus status;
     private LocalDate appliedAt;
     private String url;
-    private String description;
     private List<String> tags;
     private String notes;
 }

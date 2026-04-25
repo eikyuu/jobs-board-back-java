@@ -28,6 +28,34 @@ public class JobService {
     }
 
     @Transactional
+    public boolean delete(String id) {
+        if (!jobRepository.existsById(id)) {
+            return false;
+        }
+        jobRepository.deleteById(id);
+        return true;
+    }
+
+    @Transactional
+    public Optional<Job> update(String id, CreateJobRequest request) {
+        return jobRepository.findById(id).map(job -> {
+            job.setTitle(request.getTitle());
+            job.setCompany(request.getCompany());
+            job.setLocation(request.getLocation());
+            job.setRemote(request.getRemote());
+            job.setContractType(request.getContractType());
+            job.setSalary(request.getSalary());
+            job.setStatus(request.getStatus());
+            job.setAppliedAt(request.getAppliedAt());
+            job.setUrl(request.getUrl());
+            job.setTags(request.getTags() != null ? request.getTags() : new ArrayList<>());
+            job.setNotes(request.getNotes());
+            job.setUpdatedAt(LocalDateTime.now());
+            return jobRepository.save(job);
+        });
+    }
+
+    @Transactional
     public Job create(CreateJobRequest request) {
         Job job = Job.builder()
                 .title(request.getTitle())
@@ -39,7 +67,6 @@ public class JobService {
                 .status(request.getStatus())
                 .appliedAt(request.getAppliedAt())
                 .url(request.getUrl())
-                .description(request.getDescription())
                 .tags(request.getTags() != null ? request.getTags() : new ArrayList<>())
                 .notes(request.getNotes())
                 .updatedAt(LocalDateTime.now())
