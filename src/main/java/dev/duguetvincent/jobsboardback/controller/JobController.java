@@ -1,6 +1,7 @@
 package dev.duguetvincent.jobsboardback.controller;
 
 import dev.duguetvincent.jobsboardback.dto.CreateJobRequest;
+import dev.duguetvincent.jobsboardback.dto.JobResponse;
 import dev.duguetvincent.jobsboardback.entity.Job;
 import dev.duguetvincent.jobsboardback.service.JobService;
 import dev.duguetvincent.jobsboardback.service.PdfExportService;
@@ -23,12 +24,12 @@ public class JobController {
     private final PdfExportService pdfExportService;
 
     @GetMapping
-    public List<Job> getAll() {
+    public List<JobResponse> getAll() {
         return jobService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Job> getById(@PathVariable String id) {
+    public ResponseEntity<JobResponse> getById(@PathVariable String id) {
         return jobService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

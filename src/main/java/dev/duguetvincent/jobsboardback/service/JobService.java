@@ -1,6 +1,10 @@
 package dev.duguetvincent.jobsboardback.service;
 
 import dev.duguetvincent.jobsboardback.dto.CreateJobRequest;
+import dev.duguetvincent.jobsboardback.dto.InterviewRequest;
+import dev.duguetvincent.jobsboardback.dto.InterviewResponse;
+import dev.duguetvincent.jobsboardback.dto.JobResponse;
+import dev.duguetvincent.jobsboardback.entity.Interview;
 import dev.duguetvincent.jobsboardback.entity.Job;
 import dev.duguetvincent.jobsboardback.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +23,12 @@ public class JobService {
 
     private final JobRepository jobRepository;
 
-    public List<Job> findAll() {
-        return jobRepository.findAll();
+    public List<JobResponse> findAll() {
+        return jobRepository.findAll().stream().map(this::toJobResponse).toList();
     }
 
-    public Optional<Job> findById(String id) {
-        return jobRepository.findById(id);
+    public Optional<JobResponse> findById(String id) {
+        return jobRepository.findById(id).map(this::toJobResponse);
     }
 
     @Transactional
@@ -51,6 +55,14 @@ public class JobService {
             job.setTags(request.getTags() != null ? request.getTags() : new ArrayList<>());
             job.setNotes(request.getNotes());
             job.setUpdatedAt(LocalDateTime.now());
+
+            job.getInterviews().clear();
+            if (request.getInterviews() != null) {
+                request.getInterviews().stream()
+                        .map(dto -> toInterview(dto, job))
+                        .forEach(job.getInterviews()::add);
+            }
+
             return jobRepository.save(job);
         });
     }
@@ -72,6 +84,49 @@ public class JobService {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
+        if (request.getInterviews() != null) {
+            request.getInterviews().stream()
+                    .map(dto -> toInterview(dto, job))
+                    .forEach(job.getInterviews()::add);
+        }
+
         return jobRepository.save(job);
+    }
+
+    private Interview toInterview(InterviewRequest dto, Job job) {
+        return Interview.builder()
+                .date(dto.getDate())
+                .type(dto.getType())
+                .notes(dto.getNotes())
+                .job(job)
+                .build();
+    }
+
+    private JobResponse toJobResponse(Job job) {
+        List<InterviewResponse> interviews = job.getInterviews().stream()
+                .map(i -> InterviewResponse.builder()
+                        .id(i.getId())
+                        .date(i.getDate())
+                        .type(i.getType())
+                        .notes(i.getNotes())
+                        .build())
+                .toList();
+
+        return JobResponse.builder()
+                .id(job.getId())
+                .title(job.getTitle())
+                .company(job.getCompany())
+                .location(job.getLocation())
+                .remote(job.getRemote())
+                .contractType(job.getContractType())
+                .salary(job.getSalary())
+                .status(job.getStatus())
+                .appliedAt(job.getAppliedAt())
+                .updatedAt(job.getUpdatedAt())
+                .url(job.getUrl())
+                .tags(job.getTags())
+                .notes(job.getNotes())
+                .interviews(interviews)
+                .build();
     }
 }

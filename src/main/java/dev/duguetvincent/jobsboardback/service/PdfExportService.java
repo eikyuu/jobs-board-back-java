@@ -4,7 +4,7 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import dev.duguetvincent.jobsboardback.entity.Job;
+import dev.duguetvincent.jobsboardback.dto.JobResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ public class PdfExportService {
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final String[] HEADERS = {"Titre", "Entreprise", "Lieu", "Remote", "Contrat", "Statut", "Candidature", "URL"};
 
-    public byte[] exportJobs(List<Job> jobs) {
+    public byte[] exportJobs(List<JobResponse> jobs) {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Document document = new Document(PageSize.A4.rotate(), 20, 20, 40, 30);
             PdfWriter.getInstance(document, out);
@@ -47,7 +47,7 @@ public class PdfExportService {
 
             Font cellFont = FontFactory.getFont(FontFactory.HELVETICA, 8);
             boolean alternate = false;
-            for (Job job : jobs) {
+            for (JobResponse job : jobs) {
                 Color bg = alternate ? new Color(240, 244, 255) : Color.WHITE;
                 addCell(table, job.getTitle(), cellFont, bg);
                 addCell(table, job.getCompany(), cellFont, bg);
