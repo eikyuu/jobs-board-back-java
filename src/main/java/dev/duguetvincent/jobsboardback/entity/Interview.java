@@ -3,7 +3,7 @@ package dev.duguetvincent.jobsboardback.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "interviews")
@@ -19,7 +19,7 @@ public class Interview {
     private String id;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDateTime scheduledAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -1,6 +1,8 @@
 package dev.duguetvincent.jobsboardback.repository;
 
 import dev.duguetvincent.jobsboardback.entity.Job;
+import jakarta.annotation.Nonnull;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,8 +12,10 @@ import java.util.Optional;
 public interface JobRepository extends JpaRepository<Job, String> {
 
     @EntityGraph(attributePaths = {"interviews"})
+    @Nonnull
     List<Job> findAll();
 
     @EntityGraph(attributePaths = {"interviews"})
-    Optional<Job> findById(String id);
+    @Nonnull
+    Optional<Job> findById(@NonNull String id);
 }

@@ -95,7 +95,7 @@ public class JobService {
 
     private Interview toInterview(InterviewRequest dto, Job job) {
         return Interview.builder()
-                .date(dto.getDate())
+                .scheduledAt(dto.getScheduledAt())
                 .type(dto.getType())
                 .notes(dto.getNotes())
                 .job(job)
@@ -106,7 +106,7 @@ public class JobService {
         List<InterviewResponse> interviews = job.getInterviews().stream()
                 .map(i -> InterviewResponse.builder()
                         .id(i.getId())
-                        .date(i.getDate())
+                        .scheduledAt(i.getScheduledAt())
                         .type(i.getType())
                         .notes(i.getNotes())
                         .build())
